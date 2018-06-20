@@ -1,17 +1,20 @@
-import express from 'express';
-import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
-import bodyParser from 'body-parser';
-import schema from './data/schema';
+const express = require('express')
+const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
+const bodyParser = require('body-parser')
+const schema = require('./server/graphql/schema')
 
-const GRAPHQL_PORT = 3000;
+// this will allow the create-react-app instance to talk to the localhost graphql
+const cors = require('cors')
 
-const graphQLServer = express();
+const GRAPHQL_PORT = 4000;
 
-graphQLServer.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
-graphQLServer.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+const graphQLServer = express()
+
+graphQLServer.use('/graphql', cors(), bodyParser.json(), graphqlExpress({ schema }))
+graphQLServer.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
 
 graphQLServer.listen(GRAPHQL_PORT, () =>
   console.log(
     `GraphiQL is now running on http://localhost:${GRAPHQL_PORT}/graphiql`
   )
-);
+)
